@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Activity, ArrowUpRight, Box, Boxes, Check,
   ChevronDown, CircleHelp, Cloud, Command,
@@ -31,6 +31,41 @@ function App() {
   const [search, setSearch] = useState("");
   const [updated, setUpdated] = useState(new Date());
   const [refreshing, setRefreshing] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  useEffect(() => {
+  loadTasks();
+}, []);
+
+async function loadTasks() {
+  try {
+    const response = await fetch("/api/tasks");
+    if (!response.ok) throw new Error("Failed to load tasks");
+
+    const data = await response.json();
+    setTasks(data);
+  } catch (error) {
+    console.error("Error loading tasks:", error);
+  }
+}
+
+async function createTask() {
+  if (!newTask.trim()) return;
+
+  try {
+    const response = await fetch(
+      `/api/tasks?name=${encodeURIComponent(newTask.trim())}`,
+      { method: "POST" }
+    );
+
+    if (!response.ok) throw new Error("Failed to create task");
+
+    setNewTask("");
+    await loadTasks();
+  } catch (error) {
+    console.error("Error creating task:", error);
+  }
+}
+  const [newTask, setNewTask] = useState("");
 
   const workloads = initialWorkloads.filter(w =>
     `${w.name} ${w.type} ${w.image}`.toLowerCase().includes(search.toLowerCase())
@@ -229,7 +264,31 @@ function App() {
               </table>
             </div>
           </section>
+<section className="workloads-card" style={{ padding: "24px", marginTop: "24px" }}>
+  <h3>Orbit Tasks</h3>
+  <p>Tasks stored in PostgreSQL</p>
 
+  <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
+    <input
+      value={newTask}
+      onChange={(e) => setNewTask(e.target.value)}
+      placeholder="Enter a task..."
+      style={{ padding: "10px", flex: 1 }}
+    />
+
+    <button onClick={createTask}>
+      <Plus size={16} /> Add Task
+    </button>
+  </div>
+
+  <div style={{ marginTop: "20px" }}>
+    {tasks.map((task) => (
+      <div key={task.id} style={{ padding: "10px", borderBottom: "1px solid #eee" }}>
+        {task.name}
+      </div>
+    ))}
+  </div>
+</section>
           <footer className="footer">
             <span><span className="green-dot"/> Preview environment</span>
             <span>Refreshed at {updated.toLocaleTimeString()}</span>

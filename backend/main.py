@@ -1,8 +1,17 @@
 from fastapi import FastAPI
-from tasks import get_tasks, add_task
+from contextlib import asynccontextmanager
+from tasks import get_tasks, add_task, init_db
 from health import get_health
 
-app = FastAPI(title="DevOps Task Manager")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(
+    title="DevOps Task Manager",
+    lifespan=lifespan
+)
 
 @app.get("/")
 def home():

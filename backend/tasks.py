@@ -1,17 +1,45 @@
-tasks = [
-    {"id": 1, "name": "Learn Docker", "completed": False},
-    {"id": 2, "name": "Deploy Kubernetes", "completed": False},
-    {"id": 3, "name": "Configure Ingress", "completed": False}
-]
+import os
+import psycopg
+
+def get_connection():
+    return psycopg.connect(
+        host=os.getenv("DB_HOST", "postgres"),
+        dbname=os.getenv("DB_NAME", "orbit"),
+        user=os.getenv("DB_USER", "orbit"),
+        password=os.environ["DB_PASSWORD"]
+    )
+
+def init_db():
+    with get_connection() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS tasks (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                completed BOOLEAN DEFAULT FALSE
+            )
+        """)
 
 def get_tasks():
-    return tasks
+    with get_connection() as conn:
+        rows = conn.execute(
+            "SELECT id, name, completed FROM tasks ORDER BY id"
+        ).fetchall()
+
+    return [
+        {"id": row[0], "name": row[1], "completed": row[2]}
+        for row in rows
+    ]
 
 def add_task(name):
-    task = {
-        "id": max((t["id"] for t in tasks), default=0) + 1,
-        "name": name,
-        "completed": False
+    with get_connection() as conn:
+        row = conn.execute(
+            "INSERT INTO tasks (name) VALUES (%s) "
+            "RETURNING id, name, completed",
+            (name,)
+        ).fetchone()
+
+    return {
+        "id": row[0],
+        "name": row[1],
+        "completed": row[2]
     }
-    tasks.append(task)
-    return task

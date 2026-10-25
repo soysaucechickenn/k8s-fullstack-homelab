@@ -5,7 +5,18 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: taskmanager.local
+    - host: orbit.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: orbit-frontend-service
+                port:
+                  number: 80
+
+    - host: api.orbit.local
       http:
         paths:
           - path: /
