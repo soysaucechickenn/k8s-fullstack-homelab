@@ -29,7 +29,7 @@ Deployed on a seven-node Minikube cluster consisting of one control-plane node a
 
 ## Dashboard
 
-*Add Orbit dashboard screenshot here.*
+![![alt text](image-3.png)](image-2.png)
 
 ## Purpose
 
