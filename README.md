@@ -1,16 +1,36 @@
-# React + Vite
+# Orbit 🚀
+### Three-Tier Kubernetes Homelab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Orbit is a task manager application I built and deployed on a local Kubernetes cluster to gain hands-on experience with containerized applications and infrastructure.
 
-Currently, two official plugins are available:
+The application features a functional task manager alongside a dashboard that visually represents my cluster.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+- **Frontend:** React, Vite, NGINX
+- **Backend:** Python, FastAPI
+- **Database:** PostgreSQL
+- **Infrastructure:** Kubernetes, Docker, Minikube
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Architecture
 
-## Expanding the ESLint configuration
+`Browser → Ingress → Frontend → Backend → PostgreSQL`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Deployed on a seven-node Minikube cluster consisting of one control-plane node and six worker nodes.
+
+## Key Features
+
+- Three-tier containerized application
+- Kubernetes Deployments, Services, and Ingress
+- Multiple frontend and backend replicas
+- Persistent PostgreSQL storage
+- Kubernetes Secrets for database credentials
+- Rolling deployments and application troubleshooting
+
+## Dashboard
+
+*Add Orbit dashboard screenshot here.*
+
+## Purpose
+
+This project was built to strengthen my understanding of Kubernetes, particularly application deployment, networking, persistent storage, and troubleshooting.
