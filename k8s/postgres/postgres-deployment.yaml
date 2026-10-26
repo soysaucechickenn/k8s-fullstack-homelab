@@ -25,7 +25,10 @@ spec:
             - name: POSTGRES_USER
               value: orbit
             - name: POSTGRES_PASSWORD
-              value: orbit-lab-password
+              valueFrom:
+                secretKeyRef:
+                  name: orbit-db-secret
+                  key: DB_PASSWORD
           ports:
             - containerPort: 5432
           volumeMounts:
