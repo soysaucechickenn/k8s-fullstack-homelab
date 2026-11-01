@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +16,7 @@ spec:
         app: postgres
     spec:
       nodeSelector:
-        kubernetes.io/hostname: minikube
+        kubernetes.io/hostname: orbit-v2
       containers:
         - name: postgres
           image: postgres:16
@@ -31,10 +32,21 @@ spec:
                   key: DB_PASSWORD
           ports:
             - containerPort: 5432
+
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
               subPath: pgdata
+
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
